@@ -17,6 +17,8 @@ setup(
         "openedx.core.djangoapps.user_api",
         "lms",
         "cms",
+        # Things CMS needs
+        "openedx",
     ],
     entry_points={
         "openedx.course_tab": [
