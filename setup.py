@@ -19,6 +19,7 @@ setup(
         "cms",
         # Things CMS needs
         "openedx",
+        "openedx.core.lib.celery",
     ],
     entry_points={
         "openedx.course_tab": [
