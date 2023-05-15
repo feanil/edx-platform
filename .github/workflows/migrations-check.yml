@@ -66,14 +66,27 @@ jobs:
       run: |
         sudo systemctl start mongod
         sudo /etc/init.d/mysql start
+        mongo --version
 
-    - name: Setup databes and user
+    - name: Setup databases and users
       run: |
         cat <<EOF | sudo mysql -u root
           CREATE DATABASE IF NOT EXISTS edxapp;
           CREATE USER 'edxapp001' IDENTIFIED BY 'password';
           GRANT ALL ON edxapp.* to 'edxapp001';
           FLUSH PRIVILEGES;
+        EOF
+
+        cat <<EOF | mongo
+          db.createUser(
+            {
+              user: "edxapp",
+              pwd:  "password",
+              roles: [
+          	     { role: "readWrite", db: "edxapp" },
+                     ]
+            }
+          )
         EOF
 
     - name: Install mysqlclient-dev binary
