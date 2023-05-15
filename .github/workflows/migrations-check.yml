@@ -67,14 +67,15 @@ jobs:
         sudo systemctl start mongod
         sudo /etc/init.d/mysql start
 
-    - name: Reset mysql password
+    - name: Setup databes and user
       run: |
         cat <<EOF | sudo mysql -u root
-          UPDATE mysql.user SET plugin = 'mysql_native_password' WHERE user = 'root';
-          UPDATE mysql.user SET authentication_string = null WHERE user = 'root';
+          CREATE DATABASE IF NOT EXISTS edxapp;
+          CREATE USER 'edxapp001' IDENTIFIED BY 'password';
+          GRANT ALL ON edxapp.* to 'edxapp001';
           FLUSH PRIVILEGES;
         EOF
-    
+
     - name: Install mysqlclient-dev binary
       run: |
         sudo apt-get update
@@ -82,12 +83,11 @@ jobs:
 
     - name: Run Tests
       env:
-        LMS_CFG: lms/envs/bok_choy.yml
+        LMS_CFG: lms/envs/minimal.yml
+        # This is from the LMS dir on purpose since we don't need anything different for the CMS yet.
+        STUDIO_CFG: lms/envs/minimal.yml
       run: |
-        echo "CREATE DATABASE IF NOT EXISTS edxtest;" | sudo mysql -u root
-        echo "CREATE DATABASE IF NOT EXISTS student_module_history_test;" | sudo mysql -u root
-
         echo "Running the LMS migrations."
-        ./manage.py lms --settings bok_choy migrate
+        ./manage.py lms migrate
         echo "Running the CMS migrations."
-        ./manage.py cms --settings bok_choy migrate
+        ./manage.py cms migrate
