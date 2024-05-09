@@ -8,7 +8,7 @@ on:
       - open-release/lilac.master
 
 jobs:
-  run-test:
+  run-tests:
     name: ${{ matrix.shard_name }}(py=${{ matrix.python-version }},dj=${{ matrix.django-version }},mongo=${{ matrix.mongo-version }})
     if: (github.repository != 'openedx/edx-platform' && github.repository != 'edx/edx-platform-private') || (github.repository == 'openedx/edx-platform' && (startsWith(github.base_ref, 'open-release') == true))
     runs-on: ubuntu-20.04
