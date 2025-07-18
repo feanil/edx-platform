@@ -83,22 +83,19 @@ class RegistrationEventTest(UserAPITestCase, OpenEdxEventsTestMixin):
 
         user = User.objects.get(username=self.user_info.get("username"))
         self.assertTrue(self.receiver_called)
-        self.assertDictContainsSubset(
-            {
-                "signal": STUDENT_REGISTRATION_COMPLETED,
-                "sender": None,
-                "user": UserData(
-                    pii=UserPersonalData(
-                        username=user.username,
-                        email=user.email,
-                        name=user.profile.name,
-                    ),
-                    id=user.id,
-                    is_active=user.is_active,
+        assert {
+            "signal": STUDENT_REGISTRATION_COMPLETED,
+            "sender": None,
+            "user": UserData(
+                pii=UserPersonalData(
+                    username=user.username,
+                    email=user.email,
+                    name=user.profile.name,
                 ),
-            },
-            event_receiver.call_args.kwargs
-        )
+                id=user.id,
+                is_active=user.is_active,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()
 
 
 @skip_unless_lms
@@ -165,19 +162,16 @@ class LoginSessionEventTest(UserAPITestCase, OpenEdxEventsTestMixin):
 
         user = User.objects.get(username=self.user.username)
         self.assertTrue(self.receiver_called)
-        self.assertDictContainsSubset(
-            {
-                "signal": SESSION_LOGIN_COMPLETED,
-                "sender": None,
-                "user": UserData(
-                    pii=UserPersonalData(
-                        username=user.username,
-                        email=user.email,
-                        name=user.profile.name,
-                    ),
-                    id=user.id,
-                    is_active=user.is_active,
+        assert {
+            "signal": SESSION_LOGIN_COMPLETED,
+            "sender": None,
+            "user": UserData(
+                pii=UserPersonalData(
+                    username=user.username,
+                    email=user.email,
+                    name=user.profile.name,
                 ),
-            },
-            event_receiver.call_args.kwargs
-        )
+                id=user.id,
+                is_active=user.is_active,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()

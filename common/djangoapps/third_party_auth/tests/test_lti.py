@@ -55,10 +55,10 @@ class UnitTestLTI(unittest.TestCase, ThirdPartyAuthTestMixin):
             lti_max_timestamp_age=10
         )
         assert parameters
-        self.assertDictContainsSubset({
+        assert {
             'custom_extra': 'parameter',
             'user_id': '292832126'
-        }, parameters)
+        }.items() <= parameters.items()
 
     def test_validate_lti_valid_request_with_get_params(self):
         request = Request(
@@ -72,10 +72,10 @@ class UnitTestLTI(unittest.TestCase, ThirdPartyAuthTestMixin):
             lti_max_timestamp_age=10
         )
         assert parameters
-        self.assertDictContainsSubset({
+        assert {
             'custom_extra': 'parameter',
             'user_id': '292832126'
-        }, parameters)
+        }.items() <= parameters.items()
 
     def test_validate_lti_old_timestamp(self):
         request = Request(
