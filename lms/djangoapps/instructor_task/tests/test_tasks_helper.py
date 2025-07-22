@@ -58,6 +58,7 @@ from ..tasks_helper.utils import UPDATE_STATUS_FAILED, UPDATE_STATUS_SUCCEEDED
 _TEAMS_CONFIG = TeamsConfig({'max_size': 2, 'topics': [{'id': 'topic', 'name': 'Topic', 'description': 'A Topic'}]})
 USE_ON_DISK_GRADE_REPORT = 'lms.djangoapps.instructor_task.tasks_helper.grades.use_on_disk_grade_reporting'
 
+
 class InstructorGradeReportTestCase(TestReportMixin, InstructorTaskCourseTestCase):
     """ Base class for grade report tests. """
 
@@ -79,6 +80,7 @@ class InstructorGradeReportTestCase(TestReportMixin, InstructorTaskCourseTestCas
                         assert row[column_header] == expected_cell_content
                         found_user = True
             assert found_user
+
 
 @ddt.ddt
 class TestInstructorGradeReport(InstructorGradeReportTestCase):
@@ -259,6 +261,7 @@ class TestInstructorGradeReport(InstructorGradeReportTestCase):
         expected_students = 2
         assert {'attempted': expected_students, 'succeeded': expected_students, 'failed': 0}.items() <= result.items()
 
+
 @ddt.ddt
 class TestTeamGradeReport(InstructorGradeReportTestCase):
     """ Test that teams appear correctly in the grade report when it is enabled for the course. """
@@ -292,6 +295,7 @@ class TestTeamGradeReport(InstructorGradeReportTestCase):
         membership1.delete()
         self._verify_cell_data_for_user(self.student1.username, self.course.id, 'Team Name', '')
         self._verify_cell_data_for_user(self.student2.username, self.course.id, 'Team Name', team2.name)
+
 
 @ddt.ddt
 class TestProblemResponsesReport(TestReportMixin, InstructorTaskModuleTestCase):
@@ -464,6 +468,7 @@ class TestProblemResponsesReport(TestReportMixin, InstructorTaskModuleTestCase):
                 result = ProblemResponses.generate(None, None, self.course.id, task_input, 'calculated')
         assert result.get('report_name') == file_name
 
+
 @ddt.ddt
 class TestProblemGradeReport(TestReportMixin, InstructorTaskModuleTestCase):
     """
@@ -531,6 +536,7 @@ class TestProblemGradeReport(TestReportMixin, InstructorTaskModuleTestCase):
         problem_name = 'Homework 1: Subsection - Problem1'
         header_row = self.csv_header_row + [problem_name + ' (Earned)', problem_name + ' (Possible)']
         self.verify_rows_in_csv([dict(list(zip(header_row, [str(self.student_1.id), self.student_1.email, self.student_1.username, ENROLLED_IN_COURSE, '0.01', '1.0', '2.0']))), dict(list(zip(header_row, [str(self.student_2.id), self.student_2.email, self.student_2.username, ENROLLED_IN_COURSE, '0.0', 'Not Attempted', '2.0']))), dict(list(zip(header_row, [str(inactive_student.id), inactive_student.email, inactive_student.username, NOT_ENROLLED_IN_COURSE, '0.0', 'Not Attempted', '2.0'])))])
+
 
 @ddt.ddt
 class TestProblemReportSplitTestContent(TestReportMixin, TestConditionalContent, InstructorTaskModuleTestCase):
@@ -604,6 +610,7 @@ class TestProblemReportSplitTestContent(TestReportMixin, TestConditionalContent,
             ProblemGradeReport.generate(None, None, self.course.id, {}, 'graded')
         assert self.get_csv_row_with_headers() == header_row
 
+
 @ddt.ddt
 @pytest.mark.usefixtures('override_descriptor_system')
 class TestProblemReportCohortedContent(TestReportMixin, ContentGroupTestCase, InstructorTaskModuleTestCase):
@@ -647,6 +654,7 @@ class TestProblemReportCohortedContent(TestReportMixin, ContentGroupTestCase, In
         user_grades = [{'user': self.staff_user, 'enrollment_status': ENROLLED_IN_COURSE, 'grade': ['0.0', 'Not Attempted', '2.0', 'Not Attempted', '2.0']}, {'user': self.alpha_user, 'enrollment_status': ENROLLED_IN_COURSE, 'grade': ['1.0', '2.0', '2.0', 'Not Available', 'Not Available']}, {'user': self.beta_user, 'enrollment_status': ENROLLED_IN_COURSE, 'grade': ['0.5', 'Not Available', 'Not Available', '1.0', '2.0']}, {'user': self.non_cohorted_user, 'enrollment_status': ENROLLED_IN_COURSE, 'grade': ['0.0', 'Not Available', 'Not Available', 'Not Available', 'Not Available']}, {'user': self.community_ta, 'enrollment_status': ENROLLED_IN_COURSE, 'grade': ['0.0', 'Not Attempted', '2.0', 'Not Available', 'Not Available']}]
         expected_grades = [self._format_user_grade(header_row, **user_grade) for user_grade in user_grades]
         self.verify_rows_in_csv(expected_grades)
+
 
 @ddt.ddt
 class TestCourseSurveyReport(TestReportMixin, InstructorTaskCourseTestCase):
@@ -711,6 +719,7 @@ class TestCourseSurveyReport(TestReportMixin, InstructorTaskCourseTestCase):
             for data in expected_data:
                 assert data in csv_file_data
 
+
 @ddt.ddt
 class TestStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
     """
@@ -768,6 +777,7 @@ class TestStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
         num_students = len(students)
         assert {'attempted': num_students, 'succeeded': num_students, 'failed': 0}.items() <= result.items()
 
+
 class TestTeamStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
     """
     Test the student report when including teams information.
@@ -823,6 +833,7 @@ class TestTeamStudentReport(TestReportMixin, InstructorTaskCourseTestCase):
         self._generate_and_verify_teams_column(self.student1.username, UNAVAILABLE)
         self._generate_and_verify_teams_column(self.student2.username, team2.name)
 
+
 @ddt.ddt
 class TestListMayEnroll(TestReportMixin, InstructorTaskCourseTestCase):
     """
@@ -865,6 +876,7 @@ class TestListMayEnroll(TestReportMixin, InstructorTaskCourseTestCase):
         num_enrollments = len(enrollments)
         assert {'attempted': num_enrollments, 'succeeded': num_enrollments, 'failed': 0}.items() <= result.items()
 
+
 class MockDefaultStorage:
     """Mock django's DefaultStorage"""
 
@@ -874,6 +886,7 @@ class MockDefaultStorage:
     def open(self, file_name):
         """Mock out DefaultStorage.open with standard python open"""
         return open(file_name)
+
 
 @patch('lms.djangoapps.instructor_task.tasks_helper.misc.DefaultStorage', new=MockDefaultStorage)
 class TestCohortStudents(TestReportMixin, InstructorTaskCourseTestCase):
@@ -1001,6 +1014,7 @@ class TestCohortStudents(TestReportMixin, InstructorTaskCourseTestCase):
         assert {'total': 2, 'attempted': 2, 'skipped': 2, 'failed': 0}.items() <= result.items()
         self.verify_rows_in_csv([dict(list(zip(self.csv_header_row, ['Cohort 1', 'True', '0', '', '', '']))), dict(list(zip(self.csv_header_row, ['Cohort 2', 'True', '0', '', '', ''])))], verify_order=False)
 
+
 @ddt.ddt
 @patch('lms.djangoapps.instructor_task.tasks_helper.misc.DefaultStorage', new=MockDefaultStorage)
 @pytest.mark.usefixtures('override_descriptor_system')
@@ -1087,6 +1101,7 @@ class TestGradeReport(TestReportMixin, InstructorTaskModuleTestCase):
             assert not mock_course_blocks.called
             assert not mock_get_score.called
 
+
 @ddt.ddt
 @patch('lms.djangoapps.instructor_task.tasks_helper.misc.DefaultStorage', new=MockDefaultStorage)
 class TestGradeReportEnrollmentAndCertificateInfo(TestReportMixin, InstructorTaskModuleTestCase):
@@ -1149,6 +1164,7 @@ class TestGradeReportEnrollmentAndCertificateInfo(TestReportMixin, InstructorTas
     def test_grade_report_enrollment_and_certificate_info(self, user_enroll_mode, has_passed, verification_status, certificate_status, certificate_mode, expected_output):
         user = self._create_user_data(user_enroll_mode, has_passed, verification_status, certificate_status, certificate_mode)
         self._verify_csv_data(user.username, expected_output)
+
 
 @ddt.ddt
 @override_settings(CERT_QUEUE='test-queue')
@@ -1326,6 +1342,7 @@ class TestCertificateGeneration(InstructorTaskModuleTestCase):
         """
         return [self.create_student(username=f'student_{index}', email=f'student_{index}@example.com') for index in range(number_of_students)]
 
+
 @ddt.ddt
 class TestInstructorOra2Report(SharedModuleStoreTestCase):
     """
@@ -1372,7 +1389,8 @@ class TestInstructorOra2Report(SharedModuleStoreTestCase):
             key = self.course.id
             filename = f'{key.org}_{key.course}_{key.run}_ORA_data_{timestamp_str}.csv'
             assert return_val == UPDATE_STATUS_SUCCEEDED
-            mock_store_rows.assert_called_once_with(self.course.id, filename, [test_header] + test_rows, '')
+        mock_store_rows.assert_called_once_with(self.course.id, filename, [test_header] + test_rows, '')
+
 
 class TestInstructorOra2AttachmentsExport(SharedModuleStoreTestCase):
     """

@@ -183,9 +183,9 @@ class AutoAuthEnabledTestCase(AutoAuthTestCase, ModuleStoreTestCase):
             assert key in response_data
         user = User.objects.get(username=response_data['username'])
         assert {
-                'created_status': 'Logged in',
-                'anonymous_id': anonymous_id_for_user(user, None),
-            }.items() <= response_data.items()
+            'created_status': 'Logged in',
+            'anonymous_id': anonymous_id_for_user(user, None),
+        }.items() <= response_data.items()
 
     @ddt.data(*COURSE_IDS_DDT)
     @ddt.unpack

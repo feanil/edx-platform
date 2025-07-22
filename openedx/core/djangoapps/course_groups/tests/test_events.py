@@ -91,21 +91,21 @@ class CohortEventTest(SharedModuleStoreTestCase, OpenEdxEventsTestMixin):
 
         self.assertTrue(self.receiver_called)
         assert {
-                "signal": COHORT_MEMBERSHIP_CHANGED,
-                "sender": None,
-                "cohort": CohortData(
-                    user=UserData(
-                        pii=UserPersonalData(
-                            username=cohort_membership.user.username,
-                            email=cohort_membership.user.email,
-                            name=cohort_membership.user.profile.name,
-                        ),
-                        id=cohort_membership.user.id,
-                        is_active=cohort_membership.user.is_active,
+            "signal": COHORT_MEMBERSHIP_CHANGED,
+            "sender": None,
+            "cohort": CohortData(
+                user=UserData(
+                    pii=UserPersonalData(
+                        username=cohort_membership.user.username,
+                        email=cohort_membership.user.email,
+                        name=cohort_membership.user.profile.name,
                     ),
-                    course=CourseData(
-                        course_key=cohort_membership.course_id,
-                    ),
-                    name=cohort_membership.course_user_group.name,
+                    id=cohort_membership.user.id,
+                    is_active=cohort_membership.user.is_active,
                 ),
-            }.items() <= event_receiver.call_args.kwargs.items()
+                course=CourseData(
+                    course_key=cohort_membership.course_id,
+                ),
+                name=cohort_membership.course_user_group.name,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()

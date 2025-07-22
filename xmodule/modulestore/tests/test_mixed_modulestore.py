@@ -809,12 +809,12 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
         event_receiver.assert_called()
 
         assert {
-                "signal": COURSE_CREATED,
-                "sender": None,
-                "course": CourseData(
-                    course_key=test_course.id,
-                ),
-            }.items() <= event_receiver.call_args.kwargs.items()
+            "signal": COURSE_CREATED,
+            "sender": None,
+            "course": CourseData(
+                course_key=test_course.id,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()
 
     @ddt.data(ModuleStoreEnum.Type.split)
     def test_xblock_create_event(self, default_ms):
@@ -884,13 +884,13 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
 
         event_receiver.assert_called()
         assert {
-                "signal": XBLOCK_PUBLISHED,
-                "sender": None,
-                "xblock_info": XBlockData(
-                    usage_key=sequential.location,
-                    block_type=sequential.location.block_type,
-                ),
-            }.items() <= event_receiver.call_args.kwargs.items()
+            "signal": XBLOCK_PUBLISHED,
+            "sender": None,
+            "xblock_info": XBlockData(
+                usage_key=sequential.location,
+                block_type=sequential.location.block_type,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()
 
     @ddt.data(ModuleStoreEnum.Type.split)
     def test_xblock_delete_event(self, default_ms):
@@ -915,13 +915,13 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
 
         event_receiver.assert_called()
         assert {
-                "signal": XBLOCK_DELETED,
-                "sender": None,
-                "xblock_info": XBlockData(
-                    usage_key=vertical.location,
-                    block_type=vertical.location.block_type,
-                ),
-            }.items() <= event_receiver.call_args.kwargs.items()
+            "signal": XBLOCK_DELETED,
+            "sender": None,
+            "xblock_info": XBlockData(
+                usage_key=vertical.location,
+                block_type=vertical.location.block_type,
+            ),
+        }.items() <= event_receiver.call_args.kwargs.items()
 
     def setup_has_changes(self, default_ms):
         """

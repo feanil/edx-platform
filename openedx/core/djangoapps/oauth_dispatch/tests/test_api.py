@@ -44,10 +44,10 @@ class TestOAuthDispatchAPI(TestCase):
         assert token['access_token']
         assert token['refresh_token']
         assert {
-                'token_type': 'Bearer',
-                'expires_in': EXPECTED_DEFAULT_EXPIRES_IN,
-                'scope': '',
-            }.items() <= token.items()
+            'token_type': 'Bearer',
+            'expires_in': EXPECTED_DEFAULT_EXPIRES_IN,
+            'scope': '',
+        }.items() <= token.items()
         self._assert_stored_token(token['access_token'], self.user, self.client)
 
     def test_create_token_another_user(self):
