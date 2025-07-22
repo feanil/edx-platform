@@ -1513,13 +1513,11 @@ class ForumEventTestCase(ForumsEnableMixin, SharedModuleStoreTestCase, MockReque
 
         event_receiver.assert_called_once()
 
-        self.assertDictContainsSubset(
-            {
-                "signal": FORUM_THREAD_RESPONSE_CREATED,
-                "sender": None,
-            },
-            event_receiver.call_args.kwargs
-        )
+        expected = {
+            "signal": FORUM_THREAD_RESPONSE_CREATED,
+            "sender": None,
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()
 
         self.assertIn(
             "thread",
@@ -1557,13 +1555,11 @@ class ForumEventTestCase(ForumsEnableMixin, SharedModuleStoreTestCase, MockReque
         assert event['user_course_roles'] == ['Wizard']
         assert event['options']['followed'] is False
 
-        self.assertDictContainsSubset(
-            {
-                "signal": FORUM_RESPONSE_COMMENT_CREATED,
-                "sender": None,
-            },
-            event_receiver.call_args.kwargs
-        )
+        expected = {
+            "signal": FORUM_RESPONSE_COMMENT_CREATED,
+            "sender": None,
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()
 
         self.assertIn(
             "thread",
@@ -1620,13 +1616,11 @@ class ForumEventTestCase(ForumsEnableMixin, SharedModuleStoreTestCase, MockReque
         assert name == event_name
         assert event['team_id'] == team.team_id
 
-        self.assertDictContainsSubset(
-            {
-                "signal": forum_event,
-                "sender": None,
-            },
-            event_receiver.call_args.kwargs
-        )
+        expected = {
+            "signal": forum_event,
+            "sender": None,
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()
 
         self.assertIn(
             "thread",

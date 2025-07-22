@@ -90,25 +90,23 @@ class PersistentGradeEventsTest(SharedModuleStoreTestCase, OpenEdxEventsTestMixi
         PERSISTENT_GRADE_SUMMARY_CHANGED.connect(event_receiver)
         grade = PersistentCourseGrade.update_or_create(**self.params)
         self.assertTrue(self.receiver_called)
-        self.assertDictContainsSubset(
-            {
-                "signal": PERSISTENT_GRADE_SUMMARY_CHANGED,
-                "sender": None,
-                "grade": PersistentCourseGradeData(
-                    user_id=self.params["user_id"],
-                    course=CourseData(
-                        course_key=self.params["course_id"],
-                    ),
-                    course_edited_timestamp=self.params["course_edited_timestamp"],
-                    course_version=self.params["course_version"],
-                    grading_policy_hash='',
-                    percent_grade=self.params["percent_grade"],
-                    letter_grade=self.params["letter_grade"],
-                    passed_timestamp=grade.passed_timestamp
-                )
-            },
-            event_receiver.call_args.kwargs,
-        )
+        expected = {
+            "signal": PERSISTENT_GRADE_SUMMARY_CHANGED,
+            "sender": None,
+            "grade": PersistentCourseGradeData(
+                user_id=self.params["user_id"],
+                course=CourseData(
+                    course_key=self.params["course_id"],
+                ),
+                course_edited_timestamp=self.params["course_edited_timestamp"],
+                course_version=self.params["course_version"],
+                grading_policy_hash="",
+                percent_grade=self.params["percent_grade"],
+                letter_grade=self.params["letter_grade"],
+                passed_timestamp=grade.passed_timestamp,
+            ),
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()
 
 
 class CoursePassingStatusEventsTest(SharedModuleStoreTestCase, OpenEdxEventsTestMixin):
@@ -151,28 +149,26 @@ class CoursePassingStatusEventsTest(SharedModuleStoreTestCase, OpenEdxEventsTest
             grade_factory.update(self.user, self.course)
 
         self.assertTrue(self.receiver_called)
-        self.assertDictContainsSubset(
-            {
-                "signal": COURSE_PASSING_STATUS_UPDATED,
-                "sender": None,
-                "course_passing_status": CoursePassingStatusData(
-                    is_passing=True,
-                    user=UserData(
-                        pii=UserPersonalData(
-                            username=self.user.username,
-                            email=self.user.email,
-                            name=self.user.get_full_name(),
-                        ),
-                        id=self.user.id,
-                        is_active=self.user.is_active,
+        expected = {
+            "signal": COURSE_PASSING_STATUS_UPDATED,
+            "sender": None,
+            "course_passing_status": CoursePassingStatusData(
+                is_passing=True,
+                user=UserData(
+                    pii=UserPersonalData(
+                        username=self.user.username,
+                        email=self.user.email,
+                        name=self.user.get_full_name(),
                     ),
-                    course=CourseData(
-                        course_key=self.course.id,
-                    ),
+                    id=self.user.id,
+                    is_active=self.user.is_active,
                 ),
-            },
-            event_receiver.call_args.kwargs,
-        )
+                course=CourseData(
+                    course_key=self.course.id,
+                ),
+            ),
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()
 
 
 class CCXCoursePassingStatusEventsTest(
@@ -224,31 +220,29 @@ class CCXCoursePassingStatusEventsTest(
             grade_factory.update(self.user, self.store.get_course(self.ccx_locator))
 
         self.assertTrue(self.receiver_called)
-        self.assertDictContainsSubset(
-            {
-                "signal": CCX_COURSE_PASSING_STATUS_UPDATED,
-                "sender": None,
-                "course_passing_status": CcxCoursePassingStatusData(
-                    is_passing=True,
-                    user=UserData(
-                        pii=UserPersonalData(
-                            username=self.user.username,
-                            email=self.user.email,
-                            name=self.user.get_full_name(),
-                        ),
-                        id=self.user.id,
-                        is_active=self.user.is_active,
+        expected = {
+            "signal": CCX_COURSE_PASSING_STATUS_UPDATED,
+            "sender": None,
+            "course_passing_status": CcxCoursePassingStatusData(
+                is_passing=True,
+                user=UserData(
+                    pii=UserPersonalData(
+                        username=self.user.username,
+                        email=self.user.email,
+                        name=self.user.get_full_name(),
                     ),
-                    course=CcxCourseData(
-                        ccx_course_key=self.ccx_locator,
-                        master_course_key=self.course.id,
-                        display_name="",
-                        coach_email="",
-                        start=None,
-                        end=None,
-                        max_students_allowed=self.ccx.max_student_enrollments_allowed,
-                    ),
+                    id=self.user.id,
+                    is_active=self.user.is_active,
                 ),
-            },
-            event_receiver.call_args.kwargs,
-        )
+                course=CcxCourseData(
+                    ccx_course_key=self.ccx_locator,
+                    master_course_key=self.course.id,
+                    display_name="",
+                    coach_email="",
+                    start=None,
+                    end=None,
+                    max_students_allowed=self.ccx.max_student_enrollments_allowed,
+                ),
+            ),
+        }
+        assert expected.items() <= event_receiver.call_args.kwargs.items()

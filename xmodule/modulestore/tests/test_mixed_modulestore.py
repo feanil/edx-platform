@@ -808,16 +808,13 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
 
         event_receiver.assert_called()
 
-        self.assertDictContainsSubset(
-            {
+        assert {
                 "signal": COURSE_CREATED,
                 "sender": None,
                 "course": CourseData(
                     course_key=test_course.id,
                 ),
-            },
-            event_receiver.call_args.kwargs
-        )
+            }.items() <= event_receiver.call_args.kwargs.items()
 
     @ddt.data(ModuleStoreEnum.Type.split)
     def test_xblock_create_event(self, default_ms):
@@ -886,17 +883,14 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
         self.store.publish(sequential.location, self.user_id)
 
         event_receiver.assert_called()
-        self.assertDictContainsSubset(
-            {
+        assert {
                 "signal": XBLOCK_PUBLISHED,
                 "sender": None,
                 "xblock_info": XBlockData(
                     usage_key=sequential.location,
                     block_type=sequential.location.block_type,
                 ),
-            },
-            event_receiver.call_args.kwargs
-        )
+            }.items() <= event_receiver.call_args.kwargs.items()
 
     @ddt.data(ModuleStoreEnum.Type.split)
     def test_xblock_delete_event(self, default_ms):
@@ -920,17 +914,14 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
         self.store.delete_item(vertical.location, self.user_id)
 
         event_receiver.assert_called()
-        self.assertDictContainsSubset(
-            {
+        assert {
                 "signal": XBLOCK_DELETED,
                 "sender": None,
                 "xblock_info": XBlockData(
                     usage_key=vertical.location,
                     block_type=vertical.location.block_type,
                 ),
-            },
-            event_receiver.call_args.kwargs
-        )
+            }.items() <= event_receiver.call_args.kwargs.items()
 
     def setup_has_changes(self, default_ms):
         """
